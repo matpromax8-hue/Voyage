@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: gestion_missions
+      DB_USER: voyage_user
+      DB_PASS: root123
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: gestion_missions
+      MYSQL_USER: voyage_user
+      MYSQL_PASSWORD: root123
+    volumes:
+      - ./gestion_missions.sql:/docker-entrypoint-initdb.d/init.sql

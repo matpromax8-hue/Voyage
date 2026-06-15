@@ -14,3 +14,5 @@ RUN chown -R www-data:www-data /var/www/html/
 
 # Expose port 80
 EXPOSE 80
+
+RUN rm /var/www/html/seed_user.php

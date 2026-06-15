@@ -31,7 +31,7 @@ class Database {
             );
         } catch(PDOException $exception) {
             error_log("Database connection error: " . $exception->getMessage());
-            throw $exception;
+            throw new RuntimeException("DB error: ". $exception->getMessage());
         }
         return $this->conn;
     }
