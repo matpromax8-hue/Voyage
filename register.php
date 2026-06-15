@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Exception $e) {
             error_log("Registration error: " . $e->getMessage());
             $erreur = 'Erreur technique: ' . $e->getMessage();
+            return $erreur;
 
             // $error = 'Une erreur est survenue. Veuillez réessayer plus tard.';
         }
