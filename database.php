@@ -5,6 +5,7 @@ class Database {
     private string $db_name;
     private string $username;
     private string $password;
+    private string $port;
     public ?PDO $conn = null;
 
     public function __construct() {
@@ -12,6 +13,7 @@ class Database {
         $this->db_name = getenv('DB_NAME') ?: 'gestion_missions';
         $this->username = getenv('DB_USER') ?: 'root';
         $this->password = getenv('DB_PASS') ?: 'root123';
+        $this->port = getenv('DB_PORT') ?: '3306'
     }
 
     public function getConnection(): PDO {
@@ -20,18 +22,19 @@ class Database {
         }
         try {
             $this->conn = new PDO(
-                "mysql:host={$this->host};dbname={$this->db_name};charset=utf8mb4",
+                "mysql:host={$this->host};dbname={$this->db_name};port={$this->port};charset=utf8mb4",
                 $this->username,
                 $this->password,
                 [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                     PDO::ATTR_EMULATE_PREPARES => false,
+                    PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT  => false
                 ]
             );
         } catch(PDOException $exception) {
             error_log("Database connection error: " . $exception->getMessage());
-            throw new RuntimeException("DB error: ". $exception->getMessage());
+            throw $exception;
         }
         return $this->conn;
     }
