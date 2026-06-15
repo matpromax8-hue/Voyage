@@ -13,7 +13,7 @@ class Database {
         $this->db_name = getenv('DB_NAME') ?: 'gestion_missions';
         $this->username = getenv('DB_USER') ?: 'root';
         $this->password = getenv('DB_PASS') ?: 'root123';
-        $this->port = getenv('DB_PORT') ?: '3306';
+        $this->port = getenv('DB_PORT') ?: '3306';  
     }
 
     public function getConnection(): PDO {
