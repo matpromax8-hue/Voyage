@@ -22,7 +22,7 @@
         if (!Controler::validateCsrfToken($_POST['csrf_token'] ?? null)) {
             $errors[] = "Token de sécurité invalide. Veuillez réessayer.";
         } else {
-            $errors = $controller->validate($_POST);
+            $errors = $controller->validateUpdate($_POST);
 
             if (empty($errors)) {
                 try {
@@ -32,11 +32,12 @@
                         'mission' => $_POST['mission'],
                         'objectif' => $_POST['objectif'],
                         'pays_organisateur' => $_POST['pays_organisateur'],
-                        'date_depart' => $_POST['date_depart'],
-                        'date_arrivee' => $_POST['date_arrivee'],
+                        'date_depart' => Controler::formatDate($_POST['date_depart']),
+                        'date_arrivee' => Controler::formatDate($_POST['date_arrivee']),
                         'responsable_financier' => $_POST['responsable_financier']
                     ];
                     $controller->updateData($id, $data);
+                    $controller->logHistorique($id, 'modification', 'Modifié par ' . getLoggedInUserEmail());
                     header("Location: liste-voyages.php");
                     exit();
                 } catch (Exception $e) {

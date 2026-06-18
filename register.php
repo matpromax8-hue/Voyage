@@ -1,6 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 require_once 'database.php';
 require_once 'auth_middleware.php';
 
@@ -46,10 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } catch (Exception $e) {
             error_log("Registration error: " . $e->getMessage());
-            $error = 'Erreur technique: ' . $e->getMessage();
-            
-
-            // $error = 'Une erreur est survenue. Veuillez réessayer plus tard.';
+            $error = 'Une erreur est survenue. Veuillez réessayer plus tard.';
         }
     }
 }

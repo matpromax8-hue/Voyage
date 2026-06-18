@@ -24,10 +24,16 @@
     $ctrl = new Controler();
     try {
         $ctrl->updateData($id, ["statut" => $newStatus]);
+        $actionLabel = ($newStatus === 'archive') ? 'archivage' : 'désarchivage';
+        $ctrl->logHistorique($id, $actionLabel, 'Statut changé vers "' . $newStatus . '" par ' . getLoggedInUserEmail());
     } catch (Exception $e) {
         error_log("Archive error: " . $e->getMessage());
     }
 
+    $allowedRedirects = ['liste-voyages.php', 'archives.php'];
     $redirect = $_POST['redirect'] ?? 'liste-voyages.php';
+    if (!in_array($redirect, $allowedRedirects, true)) {
+        $redirect = 'liste-voyages.php';
+    }
     header("Location: $redirect");
     exit;

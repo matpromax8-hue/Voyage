@@ -43,6 +43,15 @@
             return $stmt;
         }
 
+        public function lireParStatut(string $table_name, string $statut) {
+            $this->validateTable($table_name);
+            $query = "SELECT * FROM `$table_name` WHERE statut = :statut";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindValue(":statut", $statut);
+            $stmt->execute();
+            return $stmt;
+        }
+
         public function lireUn(int $id, string $table_name){
             $this->validateTable($table_name);
             $query = "SELECT * FROM `$table_name` WHERE id = :id";
@@ -70,7 +79,7 @@
             if (!$stmt->execute()) {
                 throw new \RuntimeException("Échec de l'insertion dans la table $table_name");
             }
-            return $stmt;
+            return (int)$this->conn->lastInsertId();
         }
 
         public function modifierUn(int $id, array $data, string $table_name){

@@ -1,8 +1,7 @@
 <?php require_once "./traitement.php";
 requireAuth();
 $controler = new Controler();
-$allVoyages = $controler->getAllData()->fetchAll(PDO::FETCH_ASSOC);
-$voyages = array_filter($allVoyages, fn($v) => strtolower(trim($v['statut'])) === 'archive');
+$voyages = $controler->getDataByStatus('archive')->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="fr">

@@ -14,14 +14,6 @@ $formData = [
     'responsable_financier' => '',
 ];
 
-function format_date(string $date){
-    $timestamp = strtotime($date);
-    if ($timestamp === false) {
-        throw new \InvalidArgumentException("Format de date invalide : $date");
-    }
-    return date("Y-m-d", $timestamp);
-}
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (!Controler::validateCsrfToken($_POST['csrf_token'] ?? null)) {
         $errors[] = "Token de sécurité invalide. Veuillez réessayer.";
@@ -29,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $formData = array_merge($formData, array_intersect_key($_POST, $formData));
 
         $controller = new Controler();
-        $errors = $controller->validate($_POST);
+        $errors = $controller->validateCreate($_POST);
 
         if (empty($errors)) {
             try {
@@ -39,13 +31,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     "mission" => $_POST["mission"],
                     "objectif" => $_POST["objectif"],
                     "pays_organisateur" => $_POST["pays_organisateur"],
-                    "date_depart" => format_date($_POST["date_depart"]),
-                    "date_arrivee" => format_date($_POST["date_arrivee"]),
+                    "date_depart" => Controler::formatDate($_POST["date_depart"]),
+                    "date_arrivee" => Controler::formatDate($_POST["date_arrivee"]),
                     "responsable_financier" => $_POST["responsable_financier"],
                     "statut" => "actif"
                 ];
 
-                $controller->insertData($data);
+                $newId = $controller->insertData($data);
+                $controller->logHistorique($newId, 'creation', 'Voyage créé par ' . getLoggedInUserEmail());
                 header("Location: liste-voyages.php");
                 exit;
             } catch (Exception $e) {
