@@ -21,16 +21,25 @@ class Database {
             return $this->conn;
         }
         try {
+            $sslCa = getenv('DB_SSL_CA');
+
+            $options = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT  => false
+            ];
+
+            if ($sslCa && file_exists($sslCa)) {
+                $options[PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+                $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+            }
+
             $this->conn = new PDO(
                 "mysql:host={$this->host};dbname={$this->db_name};port={$this->port};charset=utf8mb4",
                 $this->username,
                 $this->password,
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES => false,
-                    PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT  => false
-                ]
+                $options
             );
         } catch(PDOException $exception) {
             error_log("Database connection error: " . $exception->getMessage());
